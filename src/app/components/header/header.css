@@ -1,0 +1,48 @@
+
+header{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    width: 80vw;
+    margin: auto;
+    height: 100px;
+    gap:120px;
+    align-items: center;
+
+
+
+}
+
+header div{
+    width: 10%;
+    border-right: 2px solid rgba(128, 128, 128, 0.39);
+    height: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: start;
+}
+
+header img{
+   width: 60px;
+   height: 60px;
+   object-fit: contain;
+}
+
+nav{
+    width: 40%;
+    justify-content: space-between;
+    display: flex;
+}
+a{
+    color:rgb(12, 12, 12);
+    transition: 0.3s;
+    
+}
+a.active{
+    color:rgb(119, 212, 181);
+    font-weight: bold;
+}
+a:hover{
+    transform: scale(1.022);
+    opacity: 0.6;
+}

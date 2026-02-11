@@ -1,0 +1,134 @@
+
+
+section{
+    background-image: url("https://i.pinimg.com/1200x/b0/99/64/b09964d16a6983f4dc83d6b8e4f34d28.jpg");
+    width: 100%;
+    min-height: 600px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    padding-top: 120px;
+    box-shadow: 0 -7px 22px -9px rgba(167, 167, 167, 0.816);
+}
+
+.content{
+    display: flex;
+    align-items: center;
+    gap:22px;
+  
+} 
+.content h1{
+    font-weight: bold;
+    font-size: 40px;
+    color: rgb(245, 240, 240);
+}
+p{
+    font-size: 22px;
+     color: rgb(245, 240, 240);
+   
+}
+.stars{
+    display: flex;
+    gap:8px;
+}
+.stars img{
+    width: 16px;
+    height: 16px;
+    object-fit: cover;
+}
+
+.hero{
+    width: 60%;
+    padding:30px 40px;
+    margin:auto;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:16px;
+    backdrop-filter: blur(2px);
+    background-color: rgba(0, 0, 0, 0.438);
+    border-radius: 8px;
+
+}
+
+.hero button{
+    width: 140px;
+    height: 38px;
+    border-radius: 6px;
+    border:none;
+
+    background-color: hsl(188, 51%, 44%);
+     font-family: cursive;
+    color:white;
+    transition: 0.3s;
+}
+.hero button:hover{
+     background-color: rgb(46, 121, 132);
+  
+transform: scale(1.02);
+}
+.fvRooms{
+    width: 80%;
+    margin:auto;
+    margin-block: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.line{
+    height: 2px;
+    background-color: rgba(128, 128, 128, 0.349);
+
+}
+h2{
+    text-align: center;
+    font-size: 20px;
+    color: rgb(42, 41, 41);
+}
+
+.UspCards{
+    display: flex;
+    justify-content: space-between;
+    width: 80vw;
+    margin:auto;
+    gap:30px;
+    margin-bottom: 120px;
+
+}
+.circle{
+    width: 80px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 50%;
+    border:1px solid rgb(84, 150, 216);
+}
+.circle img{
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+.uspcard p{
+  font-size: 14px;
+  color:rgba(28, 27, 27, 0.81);
+  text-align: center;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+}
+
+.uspcard{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap:6px;
+}
+
+.uspcard a{
+    font-size: 12px;
+    color:rgb(40, 170, 170);
+}
