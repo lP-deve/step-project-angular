@@ -1,1 +1,23 @@
-<p>hotels works!</p>
+
+
+
+
+<div class="rooms-container">
+    
+@for (item of hotelinfo2(); track $index) {
+    <div class="cont">
+  <div class="image-wrapper"><img  class="room-image" [src]="item.featuredImage" [alt]="item.name" ></div>
+  <div class="content">
+  <div class="info">
+      <h3>{{ item.name }}</h3>
+  
+  </div>
+
+   <button
+          class="book-btn"> Book now</button>
+  </div>
+
+  </div>
+}
+</div>
+

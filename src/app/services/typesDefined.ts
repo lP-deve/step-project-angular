@@ -38,3 +38,20 @@ export type HotelType = {
   images?: RoomImage[];
   amenities?: string[];
 };
+
+
+export type infoo ={
+  id:number;
+  type:string;
+  price:number;
+  amenities:string[];
+  capacity:number;
+}
+export type Ytype ={
+    id: number; 
+    name: string;
+     address: string;
+      city: string;
+       featuredImage: string; 
+        rooms: infoo[];
+}
