@@ -1,1 +1,85 @@
-<p>rooms works!</p>
+<div class="line"></div>
+
+<div class="main">
+<div class="nav">
+  <button
+    class="btnss"
+    [class.active]="selectedType() === 'All'"
+    (click)="setType('All')">
+    All
+  </button>
+
+  @for (type of allRooms.roomTypes(); track type.id) {
+    <button
+      class="btnss"
+      [class.active]="selectedType() === type.id"
+      (click)="setType(type.id)">
+      {{ type.name }}
+    </button>
+  }
+</div>
+
+
+<div class="filtersDiv">
+  <label>Price range: € {{ minValue() }} - € {{ maxValue() }}</label>
+
+  <div class="range-slider">
+   
+    <div
+      class="range-track"
+      [style.left.%]="(minValue() - sliderMin) / (sliderMax - sliderMin) * 100"
+      [style.width.%]="(maxValue() - minValue()) / (sliderMax - sliderMin) * 100"
+    ></div>
+
+    <!-- Min handle -->
+    <input
+      type="range"
+      [min]="sliderMin"
+      [max]="sliderMax"
+      [value]="minValue()"
+      (input)="onMinChange($any($event.target).valueAsNumber)"
+      class="slider min-slider"
+    />
+
+    <!-- Max handle -->
+    <input
+      type="range"
+      [min]="sliderMin"
+      [max]="sliderMax"
+      [value]="maxValue()"
+      (input)="onMaxChange($any($event.target).valueAsNumber)"
+      class="slider max-slider"
+    />
+  </div>
+</div>
+
+
+<div class="rooms-container">
+  @for (room of filteredRooms(); track $index) {
+    <div class="cont">
+      <div class="image-wrapper">
+        @if (room.images?.length) {
+          <img
+            class="room-image"
+            [src]="room.images?.[0]?.source"
+            [alt]="room.name"
+            loading="lazy"
+          />
+        }
+      </div>
+
+      <div class="content">
+        <div class="info">
+          <h3>{{ room.name }}</h3>
+          <div class="price">
+            <p>€ {{ room.pricePerNight }}</p>
+            <p>a night</p>
+          </div>
+        </div>
+        <button class="book-btn">Book now</button>
+      </div>
+    </div>
+  }
+</div>
+
+</div>

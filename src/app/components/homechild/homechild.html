@@ -1,27 +1,33 @@
 <div class="rooms-container">
-  @for (room of rooms; track $index) {
+  @for (room of rooms; track room.id) {
+    <div class="cont" (click)="select(room)">
+      
+      <div class="image-wrapper">
+  @if (room.images?.length) {
+    <img
+      [src]="room.images![2].source"
+      [alt]="room.name"
+      class="room-image"
+    />
+  }
+</div>
+      <div class="content">
+        <div class="info">
+          <h3>{{ room.name }}</h3>
 
-  <div class="cont">
-    <div class="image-wrapper">
-      <img
-        [src]="room.images?.[2]"
-        [alt]="room.name"
-        class="room-image"
-      />
-    </div>
-
-    <div class="content">
-      <div class="info">
-        <h3>{{ room.name }}</h3>
-        <div class="price">
-          <p>&euro; {{ room.price }}</p>
-          <p>a night</p>
+          <div class="price">
+            <p>&euro; {{ room.price }}</p>
+            <p>a night</p>
+          </div>
         </div>
+
+        <button
+          class="book-btn"
+          (click)="$event.stopPropagation(); select(room)"
+        >
+          Book now
+        </button>
       </div>
-
-      <button class="book-btn">Book now</button>
     </div>
-  </div>
-
   }
 </div>

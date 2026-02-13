@@ -1,0 +1,44 @@
+
+
+.UspCards{
+    display: flex;
+    justify-content: space-between;
+    width: 80vw;
+    margin:auto;
+    gap:30px;
+    margin-bottom: 120px;
+
+}
+.circle{
+    width: 80px;
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 50%;
+    border:1px solid rgb(84, 150, 216);
+}
+.circle img{
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+.uspcard p{
+  font-size: 14px;
+  color:rgba(28, 27, 27, 0.81);
+  text-align: center;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+}
+
+.uspcard{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap:6px;
+}
+
+.uspcard a{
+    font-size: 12px;
+    color:rgb(40, 170, 170);
+}

@@ -1,23 +1,23 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-
-type Room = {
-  id: number;
-  hotelId: number;
-  name: string;
-  description: string;
-  price: number;
-  images: string[];
-  amenities: string[];
- };
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HotelType } from '../../services/typesDefined';
 
 @Component({
   selector: 'app-homechild',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule],
   templateUrl: './homechild.html',
   styleUrls: ['./homechild.css'],
 })
 export class Homechild {
-  @Input() rooms: Room[] = [];
+  @Input() rooms: HotelType[] = [];
+  @Output() selectedHotel = new EventEmitter<HotelType>();
+
+  select(room: HotelType) {
+    this.selectedHotel.emit(room);
+  }
+
+  trackById(index: number, room: HotelType) {
+    return room.id;
+  }
 }
