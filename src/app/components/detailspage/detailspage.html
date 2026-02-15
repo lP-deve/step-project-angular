@@ -1,0 +1,52 @@
+<div class="main">
+  @if (room()) {
+    <div class="styling">
+     
+      <div class="slider">
+        @if (room().images?.length) {
+          <button class="nav prev" (click)="prevImage()">‹</button>
+          <div class="slide-wrapper">
+            <img
+              [src]="room().images[currentImageIndex]?.source"
+              [alt]="room().name"
+              class="active-image"
+            />
+          </div>
+          <button class="nav next" (click)="nextImage()">›</button>
+        } @else {
+          <p>No images available.</p>
+        }
+      </div>
+
+      <div class="booking">
+        <h3>Book this room</h3>
+        <label>Name<br /><input [(ngModel)]="customerName" type="text" /></label>
+        <label>Phone<br /><input [(ngModel)]="customerPhone" type="text" /></label>
+        <label>Check-in<br /><input [(ngModel)]="checkInDate" type="date" /></label>
+        <label>Check-out<br /><input [(ngModel)]="checkOutDate" type="date" /></label>
+
+        <div class="booking-actions">
+          <button (click)="submitBooking()">Book</button>
+        </div>
+
+        @if (bookingMessage) {
+          <p class="success">{{ bookingMessage }}</p>
+        }
+
+        @if (bookingError) {
+          <p class="error">{{ bookingError }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="info">
+      <p><strong>Price:</strong> € {{ room().pricePerNight }} / night</p>
+      <p><strong>Available:</strong> {{ room().available ? 'Yes' : 'No' }}</p>
+      <p><strong>Max Guests:</strong> {{ room().maxGuests || 'N/A' }}</p>
+      <p><strong>Type:</strong> {{ room().type || 'Not specified' }}</p>
+      <p><strong>Description:</strong> {{ room().description || 'No description' }}</p>
+    </div>
+  } @else {
+    <p>Loading room details...</p>
+  }
+</div>

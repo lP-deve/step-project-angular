@@ -55,3 +55,15 @@ export type Ytype ={
        featuredImage: string; 
         rooms: infoo[];
 }
+
+export interface Room {
+  id: number;
+  name: string;
+  pricePerNight: number;
+  available: boolean;
+  hotelId: number;
+  images?: { source: string }[]; 
+  description?: string;         
+  maxGuests?: number;           
+  type?: string;                
+}
