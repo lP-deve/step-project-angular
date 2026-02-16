@@ -1,76 +1,85 @@
-.main {
-  width: 80vw;
-  margin: auto;
-}
+.container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.details-grid { display: grid; grid-template-columns: 1fr 380px; gap: 2rem; }
 
-.styling {
-  display: flex;              
-  gap: 20px;                 
-  align-items: flex-start;   
-}
-
+/* Restored & Improved Slider */
 .slider {
-
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  max-width: 50vw;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .slide-wrapper {
-  
+  width: 100%;
+  height: 450px;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #f5f5f5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .slide-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.image-counter {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
 }
 
 .nav {
-  background: transparent;
-  border: 1px solid #ccc;
-  width: 40px;
-  height: 40px;
+  background: white;
+  border: none;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
-  line-height: 1;
+  font-size: 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.nav.prev { left: 5px; }
-.nav.next { right: 5px; }
-
-.booking {
-  flex: 1;           
+  z-index: 10;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
 }
 
-.booking label {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-}
+.nav:hover { background: #7bc1c1; color: white; }
+.nav.prev { left: 15px; }
+.nav.next { right: 15px; }
 
-.booking-actions {
-  margin-top: 6px;
-}
+/* Info Section */
+.room-header { display: flex; justify-content: space-between; align-items: center; margin: 1.5rem 0; }
+.badge { background: #e0f2f2; color: #008080; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
+.amenities-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 2rem; }
+.amenity { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 0.9rem; text-align: center; border: 1px solid #eee; }
 
-.booking .success { color: green; }
-.booking .error { color: red; }
+/* Reservation Card Styles */
+.reservation-card { background: white; padding: 2rem; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.res-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+.line { height: 1px; background: #ccc; flex-grow: 1; }
+.room-summary { background: #f9f9f9; padding: 1rem; border: 1px dashed #7bc1c1; display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.9rem; font-weight: bold; color: #555; margin-bottom: 5px; }
+.form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; }
+.form-group input.invalid { border-color: #c0392b; background: #fffcfc; }
+.err-msg { color: #c0392b; font-size: 0.8rem; font-weight: bold; margin-top: 4px; display: block; }
+.book-now-btn { width: 100%; background: #6a96b3; color: white; border: none; padding: 1rem; font-weight: bold; cursor: pointer; border-radius: 4px; }
 
-.booking{
-    border:1px solid grey;
-    padding:12px 18px;
-    border-radius: 12px;
-  
-}
+/* Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-content { background: white; padding: 3rem; border-radius: 12px; text-align: center; max-width: 400px; }
+.success-icon { width: 60px; height: 60px; background: #2ecc71; color: white; line-height: 60px; font-size: 2rem; border-radius: 50%; margin: 0 auto 1.5rem; }

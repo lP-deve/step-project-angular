@@ -1,52 +1,104 @@
-<div class="main">
+<div class="container">
   @if (room()) {
-    <div class="styling">
-     
-      <div class="slider">
-        @if (room().images?.length) {
-          <button class="nav prev" (click)="prevImage()">‹</button>
-          <div class="slide-wrapper">
-            <img
-              [src]="room().images[currentImageIndex]?.source"
-              [alt]="room().name"
-              class="active-image"
-            />
+    <div class="details-grid">
+      
+      <div class="main-content">
+        <div class="gallery-card">
+          
+          <div class="slider">
+            @if (room().images?.length) {
+              <button class="nav prev" (click)="prevImage()">‹</button>
+              
+              <div class="slide-wrapper">
+                <img 
+                  [src]="allRooms.fullImage([room().images[currentImageIndex]])" 
+                  [alt]="room().name" 
+                  class="active-image" 
+                />
+              </div>
+
+              <button class="nav next" (click)="nextImage()">›</button>
+              <div class="image-counter">{{currentImageIndex + 1}} / {{room().images.length}}</div>
+            } @else {
+              <div class="no-image">No images available</div>
+            }
           </div>
-          <button class="nav next" (click)="nextImage()">›</button>
-        } @else {
-          <p>No images available.</p>
-        }
-      </div>
+          
+          <div class="room-header">
+            <h1>{{ room().name }}</h1>
+            <span class="badge">{{ room()?.roomType?.name || 'Standard' }}</span>
+          </div>
+          
+          <div class="amenities-grid">
+            <div class="amenity"><strong>Guests:</strong> {{ room().maximumGuests }} Max</div>
+            <div class="amenity"><strong>Price:</strong> €{{ room().pricePerNight }} / night</div>
+            <div class="amenity"><strong>Status:</strong> {{ room().isAvailable ? 'Available' : 'Booked' }}</div>
+          </div>
 
-      <div class="booking">
-        <h3>Book this room</h3>
-        <label>Name<br /><input [(ngModel)]="customerName" type="text" /></label>
-        <label>Phone<br /><input [(ngModel)]="customerPhone" type="text" /></label>
-        <label>Check-in<br /><input [(ngModel)]="checkInDate" type="date" /></label>
-        <label>Check-out<br /><input [(ngModel)]="checkOutDate" type="date" /></label>
-
-        <div class="booking-actions">
-          <button (click)="submitBooking()">Book</button>
+          <div class="description">
+            <h3>About this room</h3>
+            <p>{{ room().description || 'Experience luxury and comfort in our meticulously designed suite, featuring premium amenities and elegant decor.' }}</p>
+          </div>
         </div>
-
-        @if (bookingMessage) {
-          <p class="success">{{ bookingMessage }}</p>
-        }
-
-        @if (bookingError) {
-          <p class="error">{{ bookingError }}</p>
-        }
       </div>
-    </div>
 
-    <div class="info">
-      <p><strong>Price:</strong> € {{ room().pricePerNight }} / night</p>
-      <p><strong>Available:</strong> {{ room().available ? 'Yes' : 'No' }}</p>
-      <p><strong>Max Guests:</strong> {{ room().maxGuests || 'N/A' }}</p>
-      <p><strong>Type:</strong> {{ room().type || 'Not specified' }}</p>
-      <p><strong>Description:</strong> {{ room().description || 'No description' }}</p>
+      <div class="sidebar">
+        <div class="reservation-card">
+          <div class="res-header">
+            <div class="line"></div>
+            <h2>Reservation</h2>
+            <div class="line"></div>
+          </div>
+
+          <div class="room-summary">
+             <span>{{ room().name }}</span>
+             <span class="price">€ {{ room().pricePerNight }},- <small>a night</small></span>
+          </div>
+
+          <form (submit)="$event.preventDefault()">
+            <div class="form-group">
+              <label>Check-in <i class="info-icon">i</i></label>
+              <input type="date" [(ngModel)]="checkInDate" name="cin" [class.invalid]="submitted && !checkInDate">
+              @if (submitted && !checkInDate) { <span class="err-msg">Check In Date is required.</span> }
+            </div>
+
+            <div class="form-group">
+              <label>Check-out <i class="info-icon">i</i></label>
+              <input type="date" [(ngModel)]="checkOutDate" name="cout" [class.invalid]="submitted && !checkOutDate">
+              @if (submitted && !checkOutDate) { <span class="err-msg">Check Out Date is required.</span> }
+            </div>
+
+            <div class="form-group">
+              <label>Customer Name</label>
+              <input type="text" placeholder="Please enter your name" [(ngModel)]="customerName" name="cname" [class.invalid]="submitted && !customerName">
+              @if (submitted && !customerName) { <span class="err-msg">Customer Name Field is required.</span> }
+            </div>
+
+            <div class="form-group">
+              <label>Customer Tel:Phone</label>
+              <input type="text" placeholder="Please enter your phone number" [(ngModel)]="customerPhone" name="cphone" [class.invalid]="submitted && !customerPhone">
+              @if (submitted && !customerPhone) { <span class="err-msg">Customer Phone Field is required.</span> }
+            </div>
+
+            @if (bookingError) { <p class="err-msg" style="text-align:center; margin-bottom: 10px;">{{ bookingError }}</p> }
+
+            <button class="book-now-btn" (click)="submitBooking()">BOOK NOW</button>
+          </form>
+        </div>
+      </div>
     </div>
   } @else {
-    <p>Loading room details...</p>
+    <div class="loading">Loading luxury suite details...</div>
   }
 </div>
+
+@if (isModalOpen()) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <div class="success-icon">✓</div>
+      <h2>Booking Confirmed!</h2>
+      <p>Thank you, <strong>{{ customerName }}</strong>. Your stay at the <strong>{{ room().name }}</strong> has been reserved.</p>
+      <button class="book-now-btn" (click)="closeModal()">Great!</button>
+    </div>
+  </div>
+}

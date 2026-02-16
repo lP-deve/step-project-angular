@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://hotelbooking.stepprojects.ge",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

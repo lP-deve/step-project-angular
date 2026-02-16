@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 
 export interface Booking {
   id: number;
@@ -17,12 +17,24 @@ export interface Booking {
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://hotelbooking.stepprojects.ge/api/Booking';
+  
+  // Ensure this matches your proxy.conf.json or backend URL
+  private baseUrl = '/api/Booking';
 
+  /** * Fetches all bookings from the server 
+   */
   getBookings(): Observable<Booking[]> {
-    return this.http.get<Booking[]>(this.baseUrl);
+    return this.http.get<Booking[]>(this.baseUrl).pipe(
+      catchError(err => {
+        console.error("Booking Fetch Error:", err);
+        // Returns an empty array so the app doesn't crash on error
+        return of([]); 
+      })
+    );
   }
 
+  /** * Fetches a single booking by its ID 
+   */
   getBooking(id: number): Observable<Booking> {
     return this.http.get<Booking>(`${this.baseUrl}/${id}`);
   }

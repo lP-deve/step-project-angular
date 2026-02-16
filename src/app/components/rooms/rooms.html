@@ -1,85 +1,107 @@
-<div class="line"></div>
-
-<div class="main">
-<div class="nav">
-  <button
-    class="btnss"
-    [class.active]="selectedType() === 'All'"
-    (click)="setType('All')">
+<div class="category-tabs">
+  <button 
+    [class.active]="draftType === 'All'" 
+    (click)="selectCategory('All')">
     All
   </button>
-
+  
   @for (type of allRooms.roomTypes(); track type.id) {
-    <button
-      class="btnss"
-      [class.active]="selectedType() === type.id"
-      (click)="setType(type.id)">
+    <button 
+      [class.active]="draftType === type.id" 
+      (click)="selectCategory(type.id)">
       {{ type.name }}
     </button>
   }
 </div>
 
+<div class="filters-card">
+  <div class="filters-row">
+    
+    <div class="filter-group price-group">
+      <label>Price: €{{draftMin}} - €{{draftMax}}</label>
+      <div class="range-container">
+        <input type="range" [min]="sliderMin" [max]="sliderMax" [(ngModel)]="draftMin" class="slider">
+        <input type="range" [min]="sliderMin" [max]="sliderMax" [(ngModel)]="draftMax" class="slider">
+      </div>
+    </div>
 
-<div class="filtersDiv">
-  <label>Price range: € {{ minValue() }} - € {{ maxValue() }}</label>
+    <div class="filter-group">
+      <label>Room Type</label>
+      <select [(ngModel)]="draftType">
+        <option [ngValue]="'All'">All Types</option>
+        @for (type of allRooms.roomTypes(); track type.id) {
+          <option [ngValue]="type.id">{{ type.name }}</option>
+        }
+      </select>
+    </div>
 
-  <div class="range-slider">
-   
-    <div
-      class="range-track"
-      [style.left.%]="(minValue() - sliderMin) / (sliderMax - sliderMin) * 100"
-      [style.width.%]="(maxValue() - minValue()) / (sliderMax - sliderMin) * 100"
-    ></div>
+    <div class="filter-group">
+      <label>Check-in</label>
+      <input type="date" [(ngModel)]="draftCheckIn">
+    </div>
 
-    <!-- Min handle -->
-    <input
-      type="range"
-      [min]="sliderMin"
-      [max]="sliderMax"
-      [value]="minValue()"
-      (input)="onMinChange($any($event.target).valueAsNumber)"
-      class="slider min-slider"
-    />
+    <div class="filter-group">
+      <label>Check-out</label>
+      <input type="date" [(ngModel)]="draftCheckOut">
+    </div>
 
-    <!-- Max handle -->
-    <input
-      type="range"
-      [min]="sliderMin"
-      [max]="sliderMax"
-      [value]="maxValue()"
-      (input)="onMaxChange($any($event.target).valueAsNumber)"
-      class="slider max-slider"
-    />
+    <div class="filter-group">
+      <label>Guests</label>
+      <input type="number" [(ngModel)]="draftGuests" placeholder="2">
+    </div>
+
+    <div class="filter-actions">
+      <button class="apply-btn" (click)="applyFilters()">APPLY FILTER</button>
+      <button class="reset-btn" (click)="resetFilters()">RESET</button>
+    </div>
+
   </div>
 </div>
 
+<hr />
 
 <div class="rooms-container">
-  @for (room of filteredRooms(); track $index) {
-    <div class="cont">
-      <div class="image-wrapper">
-        @if (room.images?.length) {
-          <img
-            class="room-image"
-            [src]="room.images?.[0]?.source"
-            [alt]="room.name"
-            loading="lazy"
-          />
-        }
-      </div>
+  @if (isLoading()) {
+    <div class="loader-container">
+       <div class="spinner"></div>
+       <p>Searching for available rooms...</p>
+    </div>
+  } @else {
+    <div class="rooms-grid">
+      @for (room of allRooms.rooms(); track room.id) {
+        <div class="cont" [routerLink]="['/room', room.id]">
+          
+          <div class="image-wrapper">
+            @if (room.images?.length) {
+              <img
+                [src]="allRooms.fullImage(room.images)"
+                [alt]="room.name"
+                class="room-image"
+              />
+            }
+          </div>
 
-      <div class="content">
-        <div class="info">
-          <h3>{{ room.name }}</h3>
-          <div class="price">
-            <p>€ {{ room.pricePerNight }}</p>
-            <p>a night</p>
+          <div class="content">
+            <div class="info">
+              <h3>{{ room.name }}</h3>
+
+              <div class="price">
+                <p>&euro; {{ room.pricePerNight }}</p>
+                <p>a night</p>
+              </div>
+            </div>
+
+            <button class="book-btn">Book now</button>
           </div>
         </div>
-        <button class="book-btn">Book now</button>
-      </div>
+      } 
+      
+      @empty {
+        <div class="no-results">
+           <h3>No rooms match your criteria.</h3>
+           <p>Try adjusting your price range or dates.</p>
+        </div>
+      }
     </div>
   }
-</div>
-
 </div>

@@ -1,118 +1,117 @@
-import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HotelService } from '../../services/hotel-service';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router'; // Added Router
+import { AllRooms } from '../../services/all-rooms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-detailspage',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './detailspage.html',
   styleUrls: ['./detailspage.css'],
 })
-export class Detailspage {
+export class Detailspage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private hotelService = inject(HotelService);
+  public allRooms = inject(AllRooms);
 
   room = signal<any>(null);
-  items: any[] = [];
   currentImageIndex = 0;
+  isModalOpen = signal(false); // Modal State
 
-  customerName: string = '';
-  customerPhone: string = '';
-  checkInDate: string = '';
-  checkOutDate: string = '';
-
-  bookingMessage: string = '';
-  bookingError: string = '';
+  // Form Fields
+  customerName = '';
+  customerPhone = '';
+  checkInDate = '';
+  checkOutDate = '';
+  
+  // Validation States
+  submitted = false;
+  bookingError = '';
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const id = Number(params.get('id'));
-      this.hotelService.ApiData().subscribe((items: any[]) => {
-        this.items = items;
-        const found = items.find(r => r.id === id);
-        this.room.set(found || null);
-        this.currentImageIndex = 0;
-      });
+      const id = params.get('id');
+      if (id) {
+        this.allRooms.getRoomById(id).subscribe((data) => {
+          this.room.set(data);
+        });
+      }
     });
   }
 
+  // --- Image Slider ---
   nextImage() {
     const images = this.room()?.images || [];
-    if (!images.length) return;
-    this.currentImageIndex = (this.currentImageIndex + 1) % images.length;
+    if (images.length) this.currentImageIndex = (this.currentImageIndex + 1) % images.length;
   }
 
   prevImage() {
     const images = this.room()?.images || [];
-    if (!images.length) return;
-    this.currentImageIndex = (this.currentImageIndex - 1 + images.length) % images.length;
-  }
-   
-  submitBooking() {
-  if (!this.room()) {
-    this.bookingError = 'Room not loaded.';
-    return;
+    if (images.length) this.currentImageIndex = (this.currentImageIndex - 1 + images.length) % images.length;
   }
 
+ submitBooking() {
+  this.submitted = true;
+  const currentRoom = this.room();
+  
   if (!this.customerName || !this.customerPhone || !this.checkInDate || !this.checkOutDate) {
-    this.bookingError = 'Please fill all required fields.';
-    return;
+    return; 
   }
 
   const checkIn = new Date(this.checkInDate);
   const checkOut = new Date(this.checkOutDate);
 
   if (checkOut <= checkIn) {
-    this.bookingError = 'Check-out date must be after check-in date.';
+    this.bookingError = 'Check-out must be after check-in.';
     return;
   }
 
+  // Calculate nights and round the total price to 2 decimal places
+  const nights = (checkOut.getTime() - checkIn.getTime()) / (1000 * 3600 * 24);
+  const calculatedPrice = nights * (currentRoom.pricePerNight || 0);
 
-  const nights =
-    (checkOut.getTime() - checkIn.getTime()) /
-    (1000 * 60 * 60 * 24);
+  const payload = {
+    roomID: Number(currentRoom.id), // Ensure this is a Number
+    // Use the raw string from the input (YYYY-MM-DD) instead of toISOString() 
+    // to see if your backend prefers the simpler format
+    checkInDate: this.checkInDate, 
+    checkOutDate: this.checkOutDate,
+    totalPrice: Math.round(calculatedPrice * 100) / 100, // Round to 2 decimals
+    isConfirmed: true,
+    customerName: this.customerName,
+    // Some backends fail if the ID is too long or contains symbols
+    customerId: "CUST-" + Math.floor(Math.random() * 100000), 
+    customerPhone: this.customerPhone
+  };
 
- 
-  const totalPrice = nights * this.room().pricePerNight;
+  console.log('Sending Payload:', payload); // Check your console to see exactly what is sent
 
- const payload = {
-  roomID: this.room().id,
-  checkInDate: checkIn.toISOString(),
-  checkOutDate: checkOut.toISOString(),
-  totalPrice: totalPrice,
-  isConfirmed: true,               
-  customerName: this.customerName,
-  customerId: '1',                
-  customerPhone: this.customerPhone
-};
-
-
-  console.log('Booking payload:', payload);
-
-  this.hotelService.createBooking(payload).subscribe({
-    next: (res) => {
-      this.bookingMessage = res; 
-      this.bookingError = '';
-      this.customerName = '';
-      this.customerPhone = '';
-      this.checkInDate = '';
-      this.checkOutDate = '';
+  this.allRooms.createBooking(payload).subscribe({
+    next: () => {
+      this.isModalOpen.set(true);
+      this.resetForm();
     },
     error: (err) => {
-  if (err.error?.includes('already booked')) {
-    this.bookingError = 'This room is already booked for selected dates. Please choose different dates.';
-  } else {
-    this.bookingError = err.error || 'Booking failed.';
-  }
-}
-
+      // Log the actual server error details
+      console.error("Server says:", err.error); 
+      this.bookingError = err.error?.message || 'Booking failed. Data format error (400).';
+    }
   });
 }
 
+  resetForm() {
+    this.submitted = false;
+    this.customerName = '';
+    this.customerPhone = '';
+    this.checkInDate = '';
+    this.checkOutDate = '';
+    this.bookingError = '';
+  }
 
-
+  closeModal() {
+    this.isModalOpen.set(false);
+    this.router.navigate(['/rooms']); // Navigate back to list
+  }
 }

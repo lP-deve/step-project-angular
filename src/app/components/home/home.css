@@ -89,3 +89,36 @@ h2{
     font-size: 20px;
     color: rgb(42, 41, 41);
 }
+
+
+
+/* Spinner Styles */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  width: 100%;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #70a0b1; /* Use your theme's gold or primary color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Ensure the hero buttons and links look consistent */
+.hero button {
+  cursor: pointer;
+}

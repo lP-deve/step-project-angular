@@ -1,24 +1,48 @@
-<h2>Booked Rooms</h2>
+<div class="booked-container">
+  <div class="header-section">
+    <div class="line"></div>
+    <h2>Booked Rooms</h2>
+    <div class="line"></div>
+  </div>
 
-@if (bookings?.length) {
-  <ul>
-    @for (b of bookings; track b.id) {
-      <li>
-        <strong>{{ b.customerName || '—' }}</strong>
-        <div>Phone: {{ b.customerPhone || '—' }}</div>
-        <div>Room ID: {{ b.roomID }}</div>
-        <div>
-          Check-in:
-          {{ b.checkInDate | date:'mediumDate' }}
-          —
-          Check-out:
-          {{ b.checkOutDate | date:'mediumDate' }}
+  @if (bookings && bookings.length > 0) {
+    <div class="booking-grid">
+      @for (b of bookings; track b.id) {
+        <div class="booking-card">
+          <div class="card-header">
+            <span class="guest-name">{{ b.customerName || 'Anonymous Guest' }}</span>
+            <span class="booking-status" [class.confirmed]="b.isConfirmed">
+              {{ b.isConfirmed ? 'Confirmed' : 'Pending' }}
+            </span>
+          </div>
+          
+          <div class="card-body">
+            <div class="info-row">
+              <span class="label">Phone:</span>
+              <span class="value">{{ b.customerPhone || 'N/A' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Room Reference:</span>
+              <span class="value">#{{ b.roomID }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Stay Duration:</span>
+              <span class="value">
+                {{ b.checkInDate | date:'MMM d, y' }} — {{ b.checkOutDate | date:'MMM d, y' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span class="total-label">Total Paid:</span>
+            <span class="price-value">€ {{ b.totalPrice | number:'1.2-2' }}</span>
+          </div>
         </div>
-        <div>Total: {{ b.totalPrice }} $</div>
-        <hr />
-      </li>
-    }
-  </ul>
-} @else {
-  <p>No bookings found.</p>
-}
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>No active bookings found in the system.</p>
+    </div>
+  }
+</div>

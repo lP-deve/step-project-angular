@@ -4,7 +4,7 @@
       <div class="content">
         <div class="stars">
           @for (i of [1,2,3,4,5]; track i) {
-            <img src="star (1).png" alt="" />
+            <img src="star (1).png" alt="star icon" />
           }
         </div>
 
@@ -12,14 +12,14 @@
 
         <div class="stars">
           @for (i of [1,2,3,4,5]; track i) {
-            <img src="star (1).png" alt="" />
+            <img src="star (1).png" alt="star icon" />
           }
         </div>
       </div>
 
       <p>And we like to keep it that way!</p>
 
-      <button routerLink="hotels">See hotels</button>
+      <button routerLink="/hotels">See hotels</button>
     </div>
   </section>
 
@@ -30,11 +30,17 @@
   </div>
 
   <div class="fvRoomsList">
-   <app-homechild
-  [rooms]="rooms()"
-  (selectedHotel)="onSelected($event)"
-></app-homechild>
-
+    @if (isLoading()) {
+      <div class="loader-container">
+        <div class="spinner"></div>
+        <p>Loading our favorite rooms...</p>
+      </div>
+    } @else {
+      <app-homechild
+        [rooms]="rooms()"
+        (selectedHotel)="onSelected($event)">
+      </app-homechild>
+    }
   </div>
 
   <div class="UspSection">

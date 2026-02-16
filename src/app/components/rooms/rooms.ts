@@ -1,74 +1,91 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AllRooms } from '../../services/all-rooms';
-import { Roomtype } from '../../services/typesDefined';
+import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-rooms',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterModule],
   templateUrl: './rooms.html',
   styleUrls: ['./rooms.css'],
 })
 export class Rooms implements OnInit {
   allRooms = inject(AllRooms);
+  isLoading = signal(false);
 
-  selectedType = signal<number | 'All'>('All');
+  // --- Filter Drafts ---
+  draftType: number | 'All' = 'All';
+  draftMin = 0;
+  draftMax = 2000; 
+  draftGuests: number | null = null;
+  draftCheckIn: string | null = null;
+  draftCheckOut: string | null = null;
 
+  // --- Slider Boundaries ---
   sliderMin = 0;
-  sliderMax = 1000;
+  sliderMax = 2000;
+  private sliderInitialized = false;
 
-  minValue = signal(0);
-  maxValue = signal(1000);
+  constructor() {
+    effect(() => {
+      const currentRooms = this.allRooms.rooms();
+      // If we have data (even empty array), stop loading
+      if (currentRooms) {
+        this.isLoading.set(false);
+      }
 
-  filteredRooms = computed<Roomtype[]>(() => {
-    let rooms = this.allRooms.rooms();
-
-    const typeId = this.selectedType();
-    if (typeId !== 'All') rooms = rooms.filter(r => r.roomTypeId === typeId);
-
-    rooms = rooms.filter(
-      r => (r.pricePerNight ?? 0) >= this.minValue() &&
-           (r.pricePerNight ?? 0) <= this.maxValue()
-    );
-
-    return rooms;
-  });
-
-  ngOnInit(): void {
-    // Fetch types and rooms first
-    this.allRooms.fetchRoomTypes();
-    this.allRooms.fetchRooms();
-
-    // Wait until rooms are loaded to compute price min/max
-    this.allRooms.rooms().forEach(() => {
-      const prices = this.allRooms.rooms().map(r => r.pricePerNight ?? 0);
-      if (prices.length) {
+      // Initialize sliders based on real price data
+      if (currentRooms.length > 0 && !this.sliderInitialized) {
+        const prices = currentRooms.map(r => r.pricePerNight ?? 0);
         this.sliderMin = Math.min(...prices);
         this.sliderMax = Math.max(...prices);
-
-        this.minValue.set(this.sliderMin);
-        this.maxValue.set(this.sliderMax);
+        this.draftMin = this.sliderMin;
+        this.draftMax = this.sliderMax;
+        this.sliderInitialized = true;
       }
     });
   }
 
-  setType(typeId: number | 'All') {
-    this.selectedType.set(typeId);
+  ngOnInit() {
+    this.isLoading.set(true);
+    this.allRooms.fetchRoomTypes();
+    this.allRooms.fetchRooms(); // Initial fetch
+    
+    // Safety: If server 504s, don't leave spinner forever
+    setTimeout(() => { if(this.isLoading()) this.isLoading.set(false); }, 8000);
   }
 
-  onMinChange(value: number) {
-    if (value > this.maxValue()) this.minValue.set(this.maxValue());
-    else this.minValue.set(value);
+  selectCategory(type: number | 'All') {
+    this.draftType = type;
+    this.applyFilters();
   }
 
-  onMaxChange(value: number) {
-    if (value < this.minValue()) this.maxValue.set(this.minValue());
-    else this.maxValue.set(value);
+  applyFilters() {
+    this.isLoading.set(true);
+
+    // CLEAN PAYLOAD: Do not send nulls or 'All' to the API
+    const payload: any = {};
+    if (this.draftType !== 'All') payload.roomTypeId = Number(this.draftType);
+    if (this.draftMin !== null) payload.priceFrom = this.draftMin;
+    if (this.draftMax !== null) payload.priceTo = this.draftMax;
+    if (this.draftGuests) payload.maximumGuests = this.draftGuests;
+    if (this.draftCheckIn) payload.checkIn = this.draftCheckIn;
+    if (this.draftCheckOut) payload.checkOut = this.draftCheckOut;
+
+    console.log('Filtered Search:', payload);
+    this.allRooms.getFilteredRooms(payload);
   }
 
-  img(url: string) {
-    return this.allRooms.fullImage(url);
+  resetFilters() {
+    this.isLoading.set(true);
+    this.draftType = 'All';
+    this.draftGuests = null;
+    this.draftCheckIn = null;
+    this.draftCheckOut = null;
+    this.draftMin = this.sliderMin;
+    this.draftMax = this.sliderMax;
+    this.allRooms.fetchRooms();
   }
 }
