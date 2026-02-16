@@ -11,8 +11,8 @@ export class AllRooms {
   private imgBaseUrl = 'https://hotelbooking.stepprojects.ge';
 
   // Signals
-  roomTypes = signal<any[]>([]);
-  rooms = signal<any[]>([]);
+ roomTypes = signal<any[]>([]);
+  rooms = signal<any[] | null>(null);
 
   fetchRoomTypes() {
     if (this.roomTypes().length > 0) return;
@@ -22,7 +22,8 @@ export class AllRooms {
   }
 
   fetchRooms() {
-    // Get all rooms initially
+    // Ensuring the signal is null resets the "loading" state in the UI
+    this.rooms.set(null); 
     this.getFilteredRooms({});
   }
 

@@ -13,9 +13,10 @@ import { RouterLink, RouterModule } from '@angular/router';
 })
 export class Rooms implements OnInit {
   allRooms = inject(AllRooms);
-  isLoading = signal(false);
+  
+  // Set to TRUE by default so spinner shows immediately on page load
+  isLoading = signal(true); 
 
-  // --- Filter Drafts ---
   draftType: number | 'All' = 'All';
   draftMin = 0;
   draftMax = 2000; 
@@ -23,7 +24,6 @@ export class Rooms implements OnInit {
   draftCheckIn: string | null = null;
   draftCheckOut: string | null = null;
 
-  // --- Slider Boundaries ---
   sliderMin = 0;
   sliderMax = 2000;
   private sliderInitialized = false;
@@ -31,13 +31,13 @@ export class Rooms implements OnInit {
   constructor() {
     effect(() => {
       const currentRooms = this.allRooms.rooms();
-      // If we have data (even empty array), stop loading
-      if (currentRooms) {
+      
+      // Stop loading ONLY after the rooms signal has been updated with data from the service
+      if (currentRooms !== null && currentRooms !== undefined) {
         this.isLoading.set(false);
       }
 
-      // Initialize sliders based on real price data
-      if (currentRooms.length > 0 && !this.sliderInitialized) {
+      if (currentRooms && currentRooms.length > 0 && !this.sliderInitialized) {
         const prices = currentRooms.map(r => r.pricePerNight ?? 0);
         this.sliderMin = Math.min(...prices);
         this.sliderMax = Math.max(...prices);
@@ -49,12 +49,14 @@ export class Rooms implements OnInit {
   }
 
   ngOnInit() {
-    this.isLoading.set(true);
+    // isLoading is already true, but we call fetches here
     this.allRooms.fetchRoomTypes();
-    this.allRooms.fetchRooms(); // Initial fetch
+    this.allRooms.fetchRooms(); 
     
-    // Safety: If server 504s, don't leave spinner forever
-    setTimeout(() => { if(this.isLoading()) this.isLoading.set(false); }, 8000);
+    // Safety fallback for timeouts
+    setTimeout(() => { 
+      if(this.isLoading()) this.isLoading.set(false); 
+    }, 10000);
   }
 
   selectCategory(type: number | 'All') {
@@ -64,17 +66,14 @@ export class Rooms implements OnInit {
 
   applyFilters() {
     this.isLoading.set(true);
-
-    // CLEAN PAYLOAD: Do not send nulls or 'All' to the API
     const payload: any = {};
     if (this.draftType !== 'All') payload.roomTypeId = Number(this.draftType);
-    if (this.draftMin !== null) payload.priceFrom = this.draftMin;
-    if (this.draftMax !== null) payload.priceTo = this.draftMax;
+    payload.priceFrom = this.draftMin;
+    payload.priceTo = this.draftMax;
     if (this.draftGuests) payload.maximumGuests = this.draftGuests;
     if (this.draftCheckIn) payload.checkIn = this.draftCheckIn;
     if (this.draftCheckOut) payload.checkOut = this.draftCheckOut;
 
-    console.log('Filtered Search:', payload);
     this.allRooms.getFilteredRooms(payload);
   }
 

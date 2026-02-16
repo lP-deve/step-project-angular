@@ -57,49 +57,39 @@
 
   </div>
 </div>
-
 <hr />
 
 <div class="rooms-container">
   @if (isLoading()) {
     <div class="loader-container">
        <div class="spinner"></div>
-       <p>Searching for available rooms...</p>
+       <p>Loading the best rooms for you...</p>
     </div>
   } @else {
     <div class="rooms-grid">
       @for (room of allRooms.rooms(); track room.id) {
         <div class="cont" [routerLink]="['/room', room.id]">
-          
           <div class="image-wrapper">
             @if (room.images?.length) {
-              <img
-                [src]="allRooms.fullImage(room.images)"
-                [alt]="room.name"
-                class="room-image"
-              />
+              <img [src]="allRooms.fullImage(room.images)" [alt]="room.name" class="room-image" />
             }
           </div>
-
           <div class="content">
             <div class="info">
               <h3>{{ room.name }}</h3>
-
               <div class="price">
                 <p>&euro; {{ room.pricePerNight }}</p>
                 <p>a night</p>
               </div>
             </div>
-
             <button class="book-btn">Book now</button>
           </div>
         </div>
       } 
-      
       @empty {
         <div class="no-results">
            <h3>No rooms match your criteria.</h3>
-           <p>Try adjusting your price range or dates.</p>
+           <p>Try adjusting your filters or dates.</p>
         </div>
       }
     </div>
