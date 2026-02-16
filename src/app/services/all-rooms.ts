@@ -6,12 +6,12 @@ import { catchError, of, throwError } from 'rxjs';
 export class AllRooms {
   private http = inject(HttpClient);
 
-  // Use relative path to trigger Proxy
-  private api = '/api/Rooms';
+  // Use Absolute URL to bypass Proxy errors (status 200, ok: false)
+  private api = 'https://hotelbooking.stepprojects.ge/api/Rooms';
+  private bookingApi = 'https://hotelbooking.stepprojects.ge/api/Booking';
   private imgBaseUrl = 'https://hotelbooking.stepprojects.ge';
 
-  // Signals
- roomTypes = signal<any[]>([]);
+  roomTypes = signal<any[]>([]);
   rooms = signal<any[] | null>(null);
 
   fetchRoomTypes() {
@@ -22,64 +22,35 @@ export class AllRooms {
   }
 
   fetchRooms() {
-    // Ensuring the signal is null resets the "loading" state in the UI
     this.rooms.set(null); 
     this.getFilteredRooms({});
   }
 
   getFilteredRooms(payload: any) {
     const cleanPayload: any = {};
-    
-    // 1. FIXED: Allow '0' values (important for Price From: 0)
     Object.keys(payload).forEach(key => {
       const value = payload[key];
-      // We only remove null, undefined, or empty strings. We keep 0.
-      if (value !== null && value !== undefined && value !== 'null' && value !== '') {
+      if (value !== null && value !== undefined && value !== '' && value !== 'All') {
          cleanPayload[key] = value;
       }
     });
 
-    console.log('API Request Params:', cleanPayload);
-
-    // 2. Call API
     this.http.get<any[]>(`${this.api}/GetAvailableRooms`, { params: cleanPayload }).pipe(
       catchError(err => {
         console.error('Filter Error:', err);
-        return of([]);
+        return of([]); 
       })
     ).subscribe(res => {
-      let serverData = res || [];
-
-      // --- 3. SAFETY FILTER (Client-Side Fallback) ---
-      // If the server returns ALL rooms despite filters, we filter them here manually.
+      let serverData = Array.isArray(res) ? res : [];
       
-      // Filter by Price
-      if (cleanPayload.priceFrom !== undefined) {
-        serverData = serverData.filter(r => r.pricePerNight >= cleanPayload.priceFrom);
-      }
-      if (cleanPayload.priceTo !== undefined) {
-        serverData = serverData.filter(r => r.pricePerNight <= cleanPayload.priceTo);
-      }
+      // Client-side fallback to ensure UI reacts even if API params are ignored
+      if (cleanPayload.priceFrom !== undefined) serverData = serverData.filter(r => r.pricePerNight >= cleanPayload.priceFrom);
+      if (cleanPayload.priceTo !== undefined) serverData = serverData.filter(r => r.pricePerNight <= cleanPayload.priceTo);
+      if (cleanPayload.roomTypeId) serverData = serverData.filter(r => r.roomTypeId === Number(cleanPayload.roomTypeId));
 
-      // Filter by Room Type
-      if (cleanPayload.roomTypeId) {
-        serverData = serverData.filter(r => r.roomTypeId === cleanPayload.roomTypeId);
-      }
-
-      // Filter by Guests (if your room object has 'maximumGuests')
-      if (cleanPayload.maximumGuests) {
-        // Optional: Only filter if the property exists on the room
-        serverData = serverData.filter(r => (r.maximumGuests || 99) >= cleanPayload.maximumGuests);
-      }
-
-      console.log('Filtered Results (Client Side):', serverData.length);
-      
-      // Update the signal with the CLEAN list
       this.rooms.set(serverData);
     });
   }
-
-
 
   getRoomById(id: string | number) {
     return this.http.get<any>(`${this.api}/GetRoom/${id}`).pipe(
@@ -91,7 +62,8 @@ export class AllRooms {
   }
 
   createBooking(payload: any) {
-    return this.http.post('/api/Booking', payload, { responseType: 'text' }).pipe(
+    // Note: Absolute URL used here as well
+    return this.http.post(this.bookingApi, payload, { responseType: 'text' }).pipe(
       catchError(err => {
         console.error('Booking Error:', err);
         return throwError(() => err);
@@ -100,12 +72,10 @@ export class AllRooms {
   }
 
   fullImage(images: any[] | null | undefined): string {
-    if (!images || images.length === 0 || !images[0].source) {
-      return 'https://placehold.co/600x400?text=No+Image';
-    }
-    const url = images[0].source;
-    if (url.startsWith('http')) return url;
-    const cleanPath = url.replace(/^\/+/, '');
-    return `${this.imgBaseUrl}/${cleanPath}`;
+    if (!images || images.length === 0) return 'https://placehold.co/600x400?text=No+Image';
+    const source = images[0]?.source;
+    if (!source) return 'https://placehold.co/600x400?text=No+Image';
+    if (source.startsWith('http')) return source;
+    return `${this.imgBaseUrl}/${source.replace(/^\/+/, '')}`;
   }
 }
