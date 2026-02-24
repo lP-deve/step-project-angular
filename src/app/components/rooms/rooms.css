@@ -1,58 +1,9 @@
- .room-card img {
-  width: 100%;
-  height: 220px; 
-  display: block;
-  object-fit: cover;
-  background-color: #f4f4f4; 
-}
-
-.rooms-grid {
-  display: grid !important;
-  
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-  width: 90%;
-  max-width: 1200px;
-  margin: 40px auto !important;
-  gap: 30px !important;
-}
-
-.loader-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 50px;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db; 
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-
-.room-card img {
-  background-color: #eee;
-  min-height: 200px;
-}
-
-
 :host {
   display: block;
   background-color: #f9f9f9;
   padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
+}
 
 .category-tabs {
   display: flex;
@@ -76,13 +27,13 @@
   border-color: #76c7c0;
 }
 
-
 .filters-card {
   background: white;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   margin-bottom: 30px;
+ 
 }
 
 .filters-row {
@@ -97,63 +48,33 @@
   flex-direction: column;
   gap: 8px;
   flex: 1;
-  min-width: 150px;
+  min-width: 200px;
 }
 
-.filter-group label {
+.mat-label-sub {
   font-size: 13px;
   font-weight: 700;
   color: #333;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.info-icon {
-  background: #ccc;
-  color: white;
-  border-radius: 50%;
-  width: 14px;
-  height: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-style: normal;
-}
-
-
-select, input[type="date"], input[type="number"] {
-  border: 1px solid #e0e0e0;
-  padding: 10px;
-  border-radius: 4px;
-  color: #888;
-  outline: none;
-  width: 100%;
-}
-
-
-.price-group {
-  flex: 1.5;
-  min-width: 200px;
+  display: block;
+  margin-bottom: 4px;
 }
 
 .price-inputs {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  justify-content: center;
 }
 
 .price-inputs input {
+  width: 80px !important;
   text-align: center;
   font-weight: bold;
-}
-
-
-.filter-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border: 1px solid #e0e0e0;
+  padding:12px 25px;
+  border-radius: 4px;
+  color: #333;
+  background: #fff;
 }
 
 .apply-btn {
@@ -164,11 +85,10 @@ select, input[type="date"], input[type="number"] {
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(118, 199, 192, 0.4);
 }
 
 .reset-btn {
-  background-color: #a2d9d4;
+  background-color: #80d8d1;
   color: white;
   border: none;
   padding: 10px 25px;
@@ -177,69 +97,56 @@ select, input[type="date"], input[type="number"] {
   cursor: pointer;
 }
 
-.slider {
-  accent-color: #76c7c0;
-  width: 100%;
-} 
-
-
-
-
-.rooms-container{
-
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
-  width: 90%;
-  max-width: 1400px;
-  margin: 40px auto !important;
-  gap: 30px !important;
+::ng-deep .mdc-text-field--outlined {
+  background-color: #ffffff !important; 
+  --mdc-outlined-text-field-container-shape: 10px !important; 
+  border-radius: 10px !important;
+  min-height: 50px !important;
+  max-width: 220px!important;
 }
 
-.rooms-container img{
-    width: 100%;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-   
+::ng-deep .mdc-outlined-field__outline {
+  --mdc-outlined-field-outline-color: #e0e0e0 !important;
 }
 
-.info {
+::ng-deep .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-outlined-field__outline {
+  --mdc-outlined-field-hover-outline-color: #76c7c0 !important;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: #76c7c0 !important;
+  color: white !important;
+}
+
+::ng-deep .mat-calendar-body-today {
+  border-color: #76c7c0 !important;
+}
+
+
+
+::ng-deep .mat-mdc-slider .mdc-slider__track--active_fill {
+  border-color: #76c7c0 !important;
+}
+
+::ng-deep .mat-mdc-slider .mdc-slider__thumb-knob {
+  background-color: #ffffff !important;
+  border: 3px solid #76c7c0 !important;
+  border:1px solid #76c7c0 !important;
+}
+
+.rooms-grid {
   display: grid;
-  grid-template-areas:
-    "title title  title price";
-    justify-content: space-between;
-    align-items: center;
-    padding-left:12px;
- 
-   
-}
-.cont{
-       border:1px solid rgba(128, 128, 128, 0.227);
-       border-radius: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  width: 86%;
+  margin: 40px auto;
 }
 
-.info h3 {
-  grid-area: title;
-  font-size: 16px;
-  color:rgba(0, 0, 0, 0.77);
-
-}
-
-.price {
-  grid-area: price;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-   background-color: rgba(123, 180, 189, 0.099);;
-  padding:4px 10px;
-  border-left:2px solid rgba(128, 128, 128, 0.299);
-}
-.price p:first-child{
-  color: rgb(123, 180, 189);
-  font-weight: bold;
-}
-.price :nth-child(2){
-  font-size: 12px;
+.cont {
+  border: 1px solid rgba(128, 128, 128, 0.227);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
 }
 
 .image-wrapper {
@@ -253,6 +160,67 @@ select, input[type="date"], input[type="number"] {
   object-fit: cover;
   transition: transform 0.7s ease;
 }
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+
+.price {
+  background-color: rgba(123, 180, 189, 0.099);
+  padding: 4px 10px;
+  border-left: 2px solid rgba(128, 128, 128, 0.299);
+  text-align: center;
+}
+
+.price p:first-child {
+  color: rgb(123, 180, 189);
+  font-weight: bold;
+  margin: 0;
+}
+.mat-mdc-slider{
+  min-width: 240px !important;
+}
+
+.filter-actions{
+  display: flex;
+  flex-direction: column;
+  gap:12px;
+
+}
+
+.price p:nth-child(2) {
+  font-size: 12px;
+  margin: 0;
+}
+
+.book-btn {
+  width: 100%;
+  background-color: rgb(123, 180, 189);
+  color: white;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cont:hover .room-image {
+  transform: scale(1.01);
+}
+
+
+
+
+.room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
 .content {
   position: relative;
   transition: transform 0.7s ease;
@@ -264,16 +232,23 @@ select, input[type="date"], input[type="number"] {
   transform: translateY(40px);
   transition: all 0.7s ease;
   width: 100%;
-  background-color: rgb(123, 180, 189);
-  color:rgb(248, 248, 248);
+  background-color: rgb(103, 222, 195);
+  color: rgb(248, 248, 248);
   font-weight: bold;
-  border:none;
-  height: 26px;
+  border: none;
+  height:36px;
   border-radius: 4px;
+  text-align: center;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
-.book-btn:hover{
-    background-color: rgb(41, 176, 180);
+
+.book-btn:hover {
+  background-color: rgb(150, 225, 197);
 }
+
 .cont:hover .room-image {
   transform: translateY(-100%);
 }
@@ -282,41 +257,152 @@ select, input[type="date"], input[type="number"] {
   transform: translateY(-200px);
 }
 
-
 .cont:hover .book-btn {
   opacity: 1;
   display: block;
   transform: translateY(0);
 }
 
-/* Aggressive reset for all browser types */
-select, 
-input[type="date"], 
-input[type="number"],
-input[type="text"] {
-  all: unset !important; /* This strips EVERY default style away */
-  box-sizing: border-box !important;
-  display: block !important;
-  width: 100% !important;
-  padding: 12px !important;
-  border: 1px solid #e0e0e0 !important;
-  border-radius: 6px !important;
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: #76c7c0 !important;
+  color: white !important;
+}
+
+::ng-deep .mat-calendar-body-today {
+  border-color: #76c7c0 !important;
+}
+
+/* Adjusts the toggle icon size to fit the smaller input box */
+::ng-deep .mat-datepicker-toggle button {
+  transform: scale(0.8) !important;
+}
+
+
+/* 1. The main container that floats (the overlay) */
+::ng-deep .mat-datepicker-content {
+  background-color: #0a0a0a !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+  overflow: hidden !important; /* Ensures header corners don't clip */
+  font-family: cursive  !important;
+}
+
+/* 2. Your Header Styling (Optimized) */
+::ng-deep .mat-calendar-header {
   background-color: #fff !important;
-  color: #333 !important;
-  font-family: inherit !important;
+  color: #1b1a1a !important;
+  padding: 8px 16px !important;
+}
+
+/* 3. The Month/Year button and Arrow icons */
+::ng-deep .mat-calendar-period-button,
+::ng-deep .mat-calendar-arrow,
+::ng-deep .mat-calendar-previous-button,
+::ng-deep .mat-calendar-next-button {
+  color: #090909 !important;
+  font-family: cursive  !important;
+}
+
+/* 4. The Weekday Headers (S, M, T, W, T, F, S) */
+::ng-deep .mat-calendar-table-header th {
+  color: #76c7c0 !important; /* Your Teal color for the days */
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding-bottom: 10px !important;
+}
+
+
+/* 5. The Calendar Body (Days Grid) */
+::ng-deep .mat-calendar-content {
+  padding: 0 12px 12px 12px !important;
+  background-color: #ffffff !important;
+
+  
+}
+
+/* 6. Selected Date Circle */
+::ng-deep .mat-calendar-body-selected {
+  background-color: #76c7c0 !important;
+  color: rgb(255, 255, 255) !important;
+  border: none !important;
+}
+
+/* 7. Today's Date Ring */
+::ng-deep .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: #76c7c0 !important;
+  font-family: cursive  !important;
+}
+
+/* 8. Hover effect on any date cell */
+::ng-deep .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+  background-color: rgba(118, 199, 192, 0.397) !important;
+   
+}
+
+/* 9. Size Fixes */
+::ng-deep .mat-calendar {
+  width: 260px !important;
+  height: auto !important; /* Auto height is safer for different months */
+  font-family: cursive !important;
+     padding-bottom: 16px !important;
+     background-color: #ffffff !important;
+}
+
+::ng-deep .mat-calendar-body-cell-content {
+   font-family: cursive !important;
+  
+}
+
+/* Base style for each option */
+::ng-deep .mat-mdc-option {
+  min-height: 45px !important;
+  padding: 0 16px !important;
+  font-family: cursive !important;
+}
+
+/* The actual text inside the option */
+::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  color: #333333 !important;
   font-size: 14px !important;
-  cursor: text !important;
+  font-weight: 500 !important;
 }
 
-/* Re-add the dropdown arrow because 'all: unset' removes it */
-select {
-  cursor: pointer !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2376c7c0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 12px center !important;
+/* Hover state: Soft teal background */
+::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background-color: rgba(111, 218, 187, 0.142) !important;
+   color:white !important;
 }
 
+/* The background of the selected option in the list */
+::ng-deep .mat-mdc-option.mdc-list-item--selected {
+  background-color: rgba(118, 199, 192, 0.1) !important; 
+ 
+}
 
+/* The text color of the selected option */
+::ng-deep .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #76c7c0 !important; /* Your signature Teal */
 
+}
 
+/* Optional: Add a small teal bar to the left of the selected item */
+::ng-deep .mat-mdc-option.mdc-list-item--selected::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #76c7c0;
+}
 
+.cont{
+  max-width: 360px;;
+}
+button:hover{
+
+  opacity: 0.7;
+}
+button{
+  transition: 0.3s;
+}

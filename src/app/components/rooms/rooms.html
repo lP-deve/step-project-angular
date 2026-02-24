@@ -1,54 +1,55 @@
 <div class="category-tabs">
-  <button 
-    [class.active]="draftType === 'All'" 
-    (click)="selectCategory('All')">
-    All
-  </button>
-  
+  <button [class.active]="draftType === 'All'" (click)="selectCategory('All')">All</button>
   @for (type of allRooms.roomTypes(); track type.id) {
-    <button 
-      [class.active]="draftType === type.id" 
-      (click)="selectCategory(type.id)">
-      {{ type.name }}
-    </button>
+  <button [class.active]="draftType === type.id" (click)="selectCategory(type.id)">{{ type.name }}</button>
   }
 </div>
 
 <div class="filters-card">
   <div class="filters-row">
-    
-    <div class="filter-group price-group">
-      <label>Price: €{{draftMin}} - €{{draftMax}}</label>
+
+    <div class="filter-groupprice-group">
+      <label class="mat-label-sub">Price Per Night</label>
       <div class="range-container">
-        <input type="range" [min]="sliderMin" [max]="sliderMax" [(ngModel)]="draftMin" class="slider">
-        <input type="range" [min]="sliderMin" [max]="sliderMax" [(ngModel)]="draftMax" class="slider">
+        <mat-slider [min]="sliderMin" [max]="sliderMax" step="1">
+          <input matSliderStartThumb [(ngModel)]="draftMin">
+          <input matSliderEndThumb [(ngModel)]="draftMax">
+        </mat-slider>
+      </div>
+      <div class="price-inputs">
+        <input type="text" [value]="draftMin" readonly>
+        <input type="text" [value]="draftMax" readonly>
       </div>
     </div>
 
-    <div class="filter-group">
-      <label>Room Type</label>
-      <select [(ngModel)]="draftType">
-        <option [ngValue]="'All'">All Types</option>
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Room Type</mat-label>
+      <mat-select [(ngModel)]="draftType">
+        <mat-option [value]="'All'">All Types</mat-option>
         @for (type of allRooms.roomTypes(); track type.id) {
-          <option [ngValue]="type.id">{{ type.name }}</option>
+          <mat-option [value]="type.id">{{ type.name }}</mat-option>
         }
-      </select>
-    </div>
+      </mat-select>
+    </mat-form-field>
 
-    <div class="filter-group">
-      <label>Check-in</label>
-      <input type="date" [(ngModel)]="draftCheckIn">
-    </div>
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Check-in</mat-label>
+      <input id="data" matInput [matDatepicker]="picker" [(ngModel)]="draftCheckIn">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-    <div class="filter-group">
-      <label>Check-out</label>
-      <input type="date" [(ngModel)]="draftCheckOut">
-    </div>
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Check-out</mat-label>
+      <input id="data" matInput [matDatepicker]="checkOutPicker" [(ngModel)]="draftCheckOut">
+      <mat-datepicker-toggle matIconSuffix [for]="checkOutPicker"></mat-datepicker-toggle>
+      <mat-datepicker #checkOutPicker></mat-datepicker>
+    </mat-form-field>
 
-    <div class="filter-group">
-      <label>Guests</label>
-      <input type="number" [(ngModel)]="draftGuests" placeholder="2">
-    </div>
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>Guests</mat-label>
+      <input matInput type="number" [(ngModel)]="draftGuests" placeholder="2">
+    </mat-form-field>
 
     <div class="filter-actions">
       <button class="apply-btn" (click)="applyFilters()">APPLY FILTER</button>
@@ -57,13 +58,14 @@
 
   </div>
 </div>
+
 <hr />
 
 <div class="rooms-container">
   @if (isLoading()) {
     <div class="loader-container">
-       <div class="spinner"></div>
-       <p>Loading the best rooms for you...</p>
+      <div class="spinner"></div>
+      <p>Finding your perfect room...</p>
     </div>
   } @else {
     <div class="rooms-grid">
@@ -84,12 +86,6 @@
             </div>
             <button class="book-btn">Book now</button>
           </div>
-        </div>
-      } 
-      @empty {
-        <div class="no-results">
-           <h3>No rooms match your criteria.</h3>
-           <p>Try adjusting your filters or dates.</p>
         </div>
       }
     </div>

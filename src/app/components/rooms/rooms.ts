@@ -4,41 +4,54 @@ import { FormsModule } from '@angular/forms';
 import { AllRooms } from '../../services/all-rooms';
 import { RouterLink, RouterModule } from '@angular/router';
 
+// Angular Material Imports
+import { MatSliderModule } from '@angular/material/slider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker'; // Added
+import { provideNativeDateAdapter } from '@angular/material/core'; // Added
+
 @Component({
   selector: 'app-rooms',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterModule],
+  providers: [provideNativeDateAdapter()], // Required for Datepicker
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RouterModule,
+    MatSliderModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatDatepickerModule, // Added
+  ],
   templateUrl: './rooms.html',
   styleUrls: ['./rooms.css'],
 })
 export class Rooms implements OnInit {
   allRooms = inject(AllRooms);
-  isLoading = signal(true); 
+  isLoading = signal(true);
 
-  // --- Filter Drafts ---
   draftType: number | 'All' = 'All';
   draftMin = 0;
-  draftMax = 1000; 
+  draftMax = 1000;
   draftGuests: number | null = null;
-  draftCheckIn: string | null = null;
-  draftCheckOut: string | null = null;
+  draftCheckIn: Date | null = null; // Changed to Date type for picker compatibility
+  draftCheckOut: Date | null = null; // Changed to Date type for picker compatibility
 
-  // --- Slider Boundaries ---
   sliderMin = 0;
   sliderMax = 1000;
   private sliderInitialized = false;
 
   constructor() {
     effect(() => {
-      const currentRooms = this.allRooms.rooms();
-      
-      // If currentRooms is no longer null, the API call finished.
-      if (currentRooms !== null) {
+      const rooms = this.allRooms.rooms();
+      if (rooms !== null) {
         this.isLoading.set(false);
-
-        // Initialize sliders based on the range of prices found in the data
-        if (currentRooms.length > 0 && !this.sliderInitialized) {
-          const prices = currentRooms.map(r => r.pricePerNight ?? 0);
+        if (rooms.length > 0 && !this.sliderInitialized) {
+          const prices = rooms.map((r: any) => r.pricePerNight ?? 0);
           this.sliderMin = Math.min(...prices);
           this.sliderMax = Math.max(...prices);
           this.draftMin = this.sliderMin;
@@ -51,10 +64,7 @@ export class Rooms implements OnInit {
 
   ngOnInit() {
     this.allRooms.fetchRoomTypes();
-    this.allRooms.fetchRooms(); 
-    
-    // Safety timeout to hide spinner if server is completely unresponsive
-    setTimeout(() => { if(this.isLoading()) this.isLoading.set(false); }, 10000);
+    this.allRooms.fetchRooms();
   }
 
   selectCategory(type: number | 'All') {
@@ -64,15 +74,17 @@ export class Rooms implements OnInit {
 
   applyFilters() {
     this.isLoading.set(true);
-    const payload: any = {
-      roomTypeId: this.draftType,
+    
+    // Convert Dates to ISO strings if they exist for the API payload
+    const payload = {
+      roomTypeId: this.draftType === 'All' ? null : this.draftType,
       priceFrom: this.draftMin,
       priceTo: this.draftMax,
       maximumGuests: this.draftGuests,
-      checkIn: this.draftCheckIn,
-      checkOut: this.draftCheckOut
+      checkIn: this.draftCheckIn ? this.draftCheckIn.toISOString() : null,
+      checkOut: this.draftCheckOut ? this.draftCheckOut.toISOString() : null
     };
-
+    
     this.allRooms.getFilteredRooms(payload);
   }
 
