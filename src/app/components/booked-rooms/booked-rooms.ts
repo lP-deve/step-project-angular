@@ -1,35 +1,38 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookingService, Booking } from '../../services/booking-service';
+import { AllRooms } from '../../services/all-rooms'; // Ensure this path is correct
 
 @Component({
   selector: 'app-booked-rooms',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './booked-rooms.html',
-  styleUrls: ['./booked-rooms.css'],
+  styleUrls: ['./booked-rooms.css']
 })
 export class BookedRooms implements OnInit {
-  private bookingService = inject(BookingService);
-  bookings: Booking[] = [];
+  // Inject the service as public so the HTML can use its methods
+  public allRooms = inject(AllRooms);
+  myBookings = signal<any[]>([]);
 
-ngOnInit() {
-  this.bookingService.getBookings().subscribe({
-    next: (b: any) => {
-      console.log('API RESPONSE:', b);
+   ngOnInit(): void {
+    const data = localStorage.getItem('user_bookings');
+    if (data) {
+      this.myBookings.set(JSON.parse(data));
+    }}
 
-      this.bookings = Array.isArray(b)
-        ? b
-        : b?.data ?? [];
+  refreshBookings() {
+    const data = localStorage.getItem('user_bookings');
+    if (data) {
+      this.myBookings.set(JSON.parse(data));
+    }
+  }
 
-      console.log('FINAL BOOKINGS ARRAY:', this.bookings);
-    },
-    error: (e) => {
-      console.error('Failed to load bookings', e);
-      this.bookings = [];
-    },
-  });
-}
-
-
+  cancelBooking(id: number, index: number) {
+    if (confirm('Cancel this booking?')) {
+      const current = this.myBookings();
+      current.splice(index, 1);
+      localStorage.setItem('user_bookings', JSON.stringify(current));
+      this.myBookings.set([...current]);
+    }
+  }
 }

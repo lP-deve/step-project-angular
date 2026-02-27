@@ -1,48 +1,63 @@
 <div class="booked-container">
-  <div class="header-section">
-    <div class="line"></div>
-    <h2>Booked Rooms</h2>
-    <div class="line"></div>
+  <div class="filter-bar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Tbilisi</button>
   </div>
 
-  @if (bookings && bookings.length > 0) {
-    <div class="booking-grid">
-      @for (b of bookings; track b.id) {
-        <div class="booking-card">
-          <div class="card-header">
-            <span class="guest-name">{{ b.customerName || 'Anonymous Guest' }}</span>
-            <span class="booking-status" [class.confirmed]="b.isConfirmed">
-              {{ b.isConfirmed ? 'Confirmed' : 'Pending' }}
-            </span>
-          </div>
-          
-          <div class="card-body">
-            <div class="info-row">
-              <span class="label">Phone:</span>
-              <span class="value">{{ b.customerPhone || 'N/A' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">Room Reference:</span>
-              <span class="value">#{{ b.roomID }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">Stay Duration:</span>
-              <span class="value">
-                {{ b.checkInDate | date:'MMM d, y' }} — {{ b.checkOutDate | date:'MMM d, y' }}
-              </span>
-            </div>
-          </div>
+  <table class="booking-table">
+    <thead>
+      <tr>
+        <th>Hotel</th>
+        <th>Room</th>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Check in</th>
+        <th>Check out</th>
+        <th>Total Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (book of myBookings(); track $index) {
+        <tr>
+         <td>
+  <div class="hotel-cell">
+    <img [src]="allRooms.fullImage(book.hotelImage)" alt="hotel">
+    <div>
+      <div class="bold">{{ book.hotelName }}</div>
+      <div class="subtext">Tbilisi</div>
+    </div>
+  </div>
+</td>
 
-          <div class="card-footer">
-            <span class="total-label">Total Paid:</span>
-            <span class="price-value">€ {{ b.totalPrice | number:'1.2-2' }}</span>
-          </div>
-        </div>
+<td>
+  <div class="room-cell">
+    <img [src]="allRooms.fullImage(book.roomImage)" alt="room">
+    <div>
+      <div class="bold">{{ book.roomName }}</div>
+      <div class="price-tag">{{ book.pricePerNight }}€</div>
+    </div>
+  </div>
+</td>
+
+          <td><span class="status-badge">Booked</span></td>
+
+          <td>{{ book.checkInDate }}</td>
+          <td>{{ book.checkOutDate }}</td>
+
+          <td class="bold">{{ book.totalPrice }}€</td>
+
+          <td>
+            <button class="cancel-btn" (click)="cancelBooking(book.id, $index)">
+              CANCEL BOOKING
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" class="no-data">No bookings found. Start exploring!</td>
+        </tr>
       }
-    </div>
-  } @else {
-    <div class="empty-state">
-      <p>No active bookings found in the system.</p>
-    </div>
-  }
+    </tbody>
+  </table>
 </div>

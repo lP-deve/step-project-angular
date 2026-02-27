@@ -71,11 +71,23 @@ export class AllRooms {
     );
   }
 
-  fullImage(images: any[] | null | undefined): string {
-    if (!images || images.length === 0) return 'https://placehold.co/600x400?text=No+Image';
-    const source = images[0]?.source;
-    if (!source) return 'https://placehold.co/600x400?text=No+Image';
-    if (source.startsWith('http')) return source;
-    return `${this.imgBaseUrl}/${source.replace(/^\/+/, '')}`;
+
+  fullImage(imageData: any): string {
+  if (!imageData) return 'https://placehold.co/600x400?text=No+Image';
+
+  let path = '';
+
+  if (typeof imageData === 'string') {
+    path = imageData;
+  } else if (typeof imageData === 'object' && imageData.source) {
+    path = imageData.source; // Handle the object format {id: 1, source: "..."}
+  } else if (Array.isArray(imageData) && imageData.length > 0) {
+    path = imageData[0].source || imageData[0];
   }
+
+  if (!path) return 'https://placehold.co/600x400?text=No+Image';
+  if (path.startsWith('http')) return path;
+
+  return `${this.imgBaseUrl}/${path.replace(/^\/+/, '')}`;
+}
 }

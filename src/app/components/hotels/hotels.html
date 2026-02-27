@@ -1,23 +1,24 @@
-
-
-
-
 <div class="rooms-container">
-    
-@for (item of hotelinfo2(); track $index) {
+  @for (item of hotelinfo2(); track item.id) {
     <div class="cont">
-  <div class="image-wrapper"><img  class="room-image" [src]="item.featuredImage" [alt]="item.name" ></div>
-  <div class="content">
-  <div class="info">
-      <h3>{{ item.name }}</h3>
-  
-  </div>
-
-   <button
-          class="book-btn"> Book now</button>
-  </div>
-
-  </div>
-}
+      <div class="image-wrapper">
+        <img 
+          class="room-image" 
+          [src]="allRooms.fullImage(item.featuredImage)" 
+          [alt]="item.name">
+      </div>
+      <div class="content">
+        <div class="info">
+          <h3>{{ item.name }}</h3>
+        </div>
+        <button 
+          class="book-btn" 
+          [routerLink]="['/room', item.id]"> 
+          Book now
+        </button>
+      </div>
+    </div>
+  } @empty {
+    <p>Loading hotels...</p>
+  }
 </div>
-
