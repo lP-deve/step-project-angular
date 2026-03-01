@@ -1,104 +1,123 @@
+<main>
 <div class="container">
   @if (room()) {
-    <div class="details-grid">
-      
-      <div class="main-content">
-        <div class="gallery-card">
-          
-          <div class="slider">
-            @if (room().images?.length) {
-              <button class="nav prev" (click)="prevImage()">‹</button>
-              
-              <div class="slide-wrapper">
-                <img 
-                  [src]="allRooms.fullImage([room().images[currentImageIndex]])" 
-                  [alt]="room().name" 
-                  class="active-image" 
-                />
-              </div>
-
-              <button class="nav next" (click)="nextImage()">›</button>
-              <div class="image-counter">{{currentImageIndex + 1}} / {{room().images.length}}</div>
-            } @else {
-              <div class="no-image">No images available</div>
-            }
+  <div class="details-grid">
+    <div class="main-content">
+      <div class="gallery-card">
+        <div class="slider">
+          @if (room().images?.length) {
+          <button class="nav prev" (click)="prevImage()">‹</button>
+          <div class="slide-wrapper">
+            <img [src]="allRooms.fullImage([room().images[currentImageIndex]])" [alt]="room().name" class="active-image" />
           </div>
-          
-          <div class="room-header">
-            <h1>{{ room().name }}</h1>
-            <span class="badge">{{ room()?.roomType?.name || 'Standard' }}</span>
-          </div>
-          
-          <div class="amenities-grid">
-            <div class="amenity"><strong>Guests:</strong> {{ room().maximumGuests }} Max</div>
-            <div class="amenity"><strong>Price:</strong> €{{ room().pricePerNight }} / night</div>
-            <div class="amenity"><strong>Status:</strong> {{ room().isAvailable ? 'Available' : 'Booked' }}</div>
-          </div>
-
-          <div class="description">
-            <h3>About this room</h3>
-            <p>{{ room().description || 'Experience luxury and comfort in our meticulously designed suite, featuring premium amenities and elegant decor.' }}</p>
-          </div>
+          <button class="nav next" (click)="nextImage()">›</button>
+          <div class="image-counter">{{currentImageIndex + 1}} / {{room().images.length}}</div>
+          }
         </div>
       </div>
 
-      <div class="sidebar">
-        <div class="reservation-card">
-          <div class="res-header">
-            <div class="line"></div>
-            <h2>Reservation</h2>
-            <div class="line"></div>
-          </div>
+    
+    </div>
 
-          <div class="room-summary">
-             <span>{{ room().name }}</span>
-             <span class="price">€ {{ room().pricePerNight }},- <small>a night</small></span>
-          </div>
-
-          <form (submit)="$event.preventDefault()">
-            <div class="form-group">
-              <label>Check-in <i class="info-icon">i</i></label>
-              <input type="date" [(ngModel)]="checkInDate" name="cin" [class.invalid]="submitted && !checkInDate">
-              @if (submitted && !checkInDate) { <span class="err-msg">Check In Date is required.</span> }
-            </div>
-
-            <div class="form-group">
-              <label>Check-out <i class="info-icon">i</i></label>
-              <input type="date" [(ngModel)]="checkOutDate" name="cout" [class.invalid]="submitted && !checkOutDate">
-              @if (submitted && !checkOutDate) { <span class="err-msg">Check Out Date is required.</span> }
-            </div>
-
-            <div class="form-group">
-              <label>Customer Name</label>
-              <input type="text" placeholder="Please enter your name" [(ngModel)]="customerName" name="cname" [class.invalid]="submitted && !customerName">
-              @if (submitted && !customerName) { <span class="err-msg">Customer Name Field is required.</span> }
-            </div>
-
-            <div class="form-group">
-              <label>Customer Tel:Phone</label>
-              <input type="text" placeholder="Please enter your phone number" [(ngModel)]="customerPhone" name="cphone" [class.invalid]="submitted && !customerPhone">
-              @if (submitted && !customerPhone) { <span class="err-msg">Customer Phone Field is required.</span> }
-            </div>
-
-            @if (bookingError) { <p class="err-msg" style="text-align:center; margin-bottom: 10px;">{{ bookingError }}</p> }
-
-            <button class="book-now-btn" (click)="submitBooking()">BOOK NOW</button>
-          </form>
+    <div class="sidebar">
+      <div class="reservation-card">
+        <div class="res-header">
+          <div class="line"></div>
+          <h2>Reservation</h2>
+          <div class="line"></div>
         </div>
+
+        <div class="price-summary">
+          <span>{{ room().name }}</span>
+          <span class="price-val">€{{ room().pricePerNight }} <small>a night</small></span>
+        </div>
+
+        <form (submit)="$event.preventDefault()">
+          <div class="form-group">
+            <label>Check-in <i class="info-circle">i</i></label>
+            <input type="date" [(ngModel)]="checkInDate" name="checkin" [class.invalid]="!checkInDate && submitted">
+            <span class="err-msg" *ngIf="!checkInDate && submitted">Check In Date is required.</span>
+          </div>
+
+          <div class="form-group">
+            <label>Check-out <i class="info-circle">i</i></label>
+            <input type="date" [(ngModel)]="checkOutDate" name="checkout" [class.invalid]="!checkOutDate && submitted">
+            <span class="err-msg" *ngIf="!checkOutDate && submitted">Check Out Date is required.</span>
+          </div>
+
+          <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" [(ngModel)]="customerName" name="cname" placeholder="Please enter your name" [class.invalid]="!customerName && submitted">
+            <span class="err-msg" *ngIf="!customerName && submitted">Customer Name Field is required.</span>
+          </div>
+
+          <div class="form-group">
+            <label>Customer Tel:Phone</label>
+            <input type="tel" [(ngModel)]="customerPhone" name="cphone" placeholder="Please enter phone number" [class.invalid]="!customerPhone && submitted">
+            <span class="err-msg" *ngIf="!customerPhone && submitted">Customer Phone Field is required.</span>
+          </div>
+
+          <button class="book-now-btn" (click)="submitBooking()">BOOK NOW</button>
+          <p class="err-msg" *ngIf="bookingError" style="text-align: center; margin-top: 10px;">{{ bookingError }}</p>
+        </form>
       </div>
     </div>
-  } @else {
-    <div class="loading">Loading luxury suite details...</div>
+  </div>
   }
 </div>
 
+  <div class="details-section">
+        <div class="table-overview">
+          <div class="g">
+            <div class="line"></div>
+          <div ><span>Room Details</span></div>
+           <div class="line"></div>
+        </div>
+          <div class="features-grid">
+            <div class="feature-item"><span class="check-icon">✓</span> Double Bed</div>
+            <div class="feature-item"><span class="check-icon">✓</span> Free Internet</div>
+            <div class="feature-item"><span class="check-icon">✓</span> Free Newspaper</div>
+            <div class="feature-item"><span class="check-icon">✓</span> 60 square meter</div>
+            <div class="feature-item"><span class="check-icon">✓</span> Beach view</div>
+            <div class="feature-item"><span class="check-icon">✓</span> 2 persons</div>
+            <div class="feature-item"><span class="check-icon">✓</span> Private Balcony</div>
+            <div class="feature-item"><span class="check-icon">✓</span> Flat Screen TV</div>
+            <div class="feature-item"><span class="check-icon">✓</span> Jacuzzi</div>
+          </div>
+          <p class="description-footer">
+            {{ room().description || 'Experience luxury and comfort in our suite.' }}
+          </p>
+        </div>
+
+        <div class="overview-tabs">
+           <div class="g">
+            <div class="line"></div>
+          <div ><span>Overview</span></div>
+           <div class="line"></div>
+        </div>
+          <div class="tab-buttons">
+            <button [class.active]="activeTab() === 'overview'" (click)="activeTab.set('overview')">Overview</button>
+            <button [class.active]="activeTab() === 'facilities'" (click)="activeTab.set('facilities')">Facilities</button>
+            <button [class.active]="activeTab() === 'extra'" (click)="activeTab.set('extra')">Extra</button>
+          </div>
+          <div class="tab-content">
+            @if (activeTab() === 'overview') { <p>General overview of our room.</p> }
+            @else if (activeTab() === 'facilities') { <p>Spa, gym, and infinity pool details.</p> }
+            @else if (activeTab() === 'extra') { <p>Extra details about the stay.</p> }
+          </div>
+        </div>
+      </div>
+
+
 @if (isModalOpen()) {
-  <div class="modal-overlay">
-    <div class="modal-content">
-      <div class="success-icon">✓</div>
-      <h2>Booking Confirmed!</h2>
-      <p>Thank you, <strong>{{ customerName }}</strong>. Your stay at the <strong>{{ room().name }}</strong> has been reserved.</p>
-      <button class="book-now-btn" (click)="closeModal()">Great!</button>
-    </div>
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="success-icon">✓</div>
+    <h2>Booking Confirmed!</h2>
+    <p>Thank you, {{ customerName }}!</p>
+    <button (click)="closeModal()">Great!</button>
   </div>
+</div>
 }
+
+</main>

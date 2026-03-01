@@ -130,4 +130,6 @@ export class Detailspage implements OnInit {
     this.isModalOpen.set(false);
     this.router.navigate(['/booked']); 
   }
+
+  activeTab = signal<'overview' | 'facilities' | 'extra'>('extra');
 }

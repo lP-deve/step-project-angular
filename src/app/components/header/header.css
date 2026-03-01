@@ -13,6 +13,12 @@ header{
 
 }
 
+main{
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 3px solid rgba(56, 55, 55, 0.067);
+}
+
 header div{
     width: 10%;
     border-right: 2px solid rgba(128, 128, 128, 0.39);

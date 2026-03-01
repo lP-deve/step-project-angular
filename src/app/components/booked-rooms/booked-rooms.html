@@ -9,8 +9,7 @@
       <tr>
         <th>Hotel</th>
         <th>Room</th>
-        <th>Customer</th>
-        <th>Status</th>
+        <th>Customer</th> <th>Status</th>
         <th>Check in</th>
         <th>Check out</th>
         <th>Total Price</th>
@@ -18,27 +17,34 @@
       </tr>
     </thead>
     <tbody>
-      @for (book of myBookings(); track $index) {
+      @for (book of myBookings(); track book.id) {
         <tr>
-         <td>
-  <div class="hotel-cell">
-    <img [src]="allRooms.fullImage(book.hotelImage)" alt="hotel">
-    <div>
-      <div class="bold">{{ book.hotelName }}</div>
-      <div class="subtext">Tbilisi</div>
-    </div>
-  </div>
-</td>
+          <td>
+            <div class="hotel-cell">
+              <img [src]="allRooms.fullImage(book.hotelImage)" alt="hotel">
+              <div>
+                <div class="bold">{{ book.hotelName }}</div>
+                <div class="subtext">Tbilisi</div>
+              </div>
+            </div>
+          </td>
 
-<td>
-  <div class="room-cell">
-    <img [src]="allRooms.fullImage(book.roomImage)" alt="room">
-    <div>
-      <div class="bold">{{ book.roomName }}</div>
-      <div class="price-tag">{{ book.pricePerNight }}€</div>
-    </div>
-  </div>
-</td>
+          <td>
+            <div class="room-cell">
+              <img [src]="allRooms.fullImage(book.roomImage)" alt="room">
+              <div>
+                <div class="bold">{{ book.roomName }}</div>
+                <div class="price-tag">{{ book.pricePerNight }}€</div>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div class="customer-info">
+              <div class="bold">{{ book.customerName }} {{ book.lastName }}</div>
+              <div class="subtext">{{ book.email || 'Guest' }}</div>
+            </div>
+          </td>
 
           <td><span class="status-badge">Booked</span></td>
 
